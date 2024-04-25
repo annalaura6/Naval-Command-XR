@@ -16,13 +16,12 @@ public class TileScript : MonoBehaviour
     public void OnHit() {
         if (IsOccupiedByEnemyShip) {
             ChangeColor(Color.red); // Hit
-            // Optionally, if the ship is destroyed, you could ChangeColor(Color.black);
+            //ChangeColor(Color.black); //destroyed
         }
         else {
             ChangeColor(Color.gray); // Miss
         }
-
-        // Inform the GameManager about the hit
+        
         GameManager.Instance.RegisterHit(this, IsOccupiedByEnemyShip);
     }
 
@@ -39,9 +38,6 @@ public class TileScript : MonoBehaviour
         }
     }
     
-    
-
-// Change the method to a property
     public bool IsOccupiedByEnemyShip {
         get { return isOccupiedByEnemyShip; }
         set { isOccupiedByEnemyShip = value; }

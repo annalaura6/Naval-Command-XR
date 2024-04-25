@@ -57,107 +57,76 @@ public class GameManager : MonoBehaviour
     {
         if (tileScript.IsOccupiedByEnemyShip)
         {
-            // Hit enemy ship
             tileScript.ChangeColor(Color.red);
             Debug.Log("Hit enemy ship!");
-
-            // Check if the ship is destroyed and update accordingly
+            
             if (CheckIfShipIsDestroyed(tileScript))
             {
-                // If ship is destroyed:
                 tileScript.ChangeColor(Color.black);
-                ChangeShipTilesToDestroyed(tileScript); // You would need to implement this method
+                ChangeShipTilesToDestroyed(tileScript);
                 Debug.Log("Enemy ship destroyed!");
             }
-
-            // Player gets an extra turn if they hit a ship
+            
             isPlayerTurn = true;
             Debug.Log("Player's turn continues.");
         }
         else
         {
-            // Missed enemy ship
             tileScript.ChangeColor(Color.grey);
             Debug.Log("Missed!");
-
-            // Switch turns to the AI
+            
             isPlayerTurn = false;
-            Invoke(nameof(StartEnemyTurn), 1.0f);  // Simulate delay for enemy turn
+            Invoke(nameof(StartEnemyTurn), 1.0f); 
             Debug.Log("Switching to enemy's turn.");
         }
     }
     
     private void ChangeShipTilesToDestroyed(TileScript hitTile)
     {
-        // You would iterate over all tiles of the ship that hitTile belongs to and change their color
         foreach (var tile in GetShipTiles(hitTile))
         {
             tile.ChangeColor(Color.black);
         }
     }
 
-// Dummy method to get all tiles of the ship to which a hit tile belongs
+
     private IEnumerable<TileScript> GetShipTiles(TileScript hitTile)
     {
-        // Implement your logic to retrieve all tiles based on your game's data structure
-        return new List<TileScript>();  // Replace with actual tile retrieval logic
+        return new List<TileScript>(); 
     }
-
-// Method to check if a ship is destroyed
+    
     private bool CheckIfShipIsDestroyed(TileScript hitTile)
     {
-        // This method would need access to the ship's tiles and check if all are hit
-        // Here is a dummy return statement; you need to implement this logic based on your game's data structure
-        return false; // Replace with actual check based on your game's ship data structure
+        return false;
     }
     
     public void RegisterHit(TileScript hitTile, bool isHit)
     {
         if (isHit)
         {
-            // Hit logic
             Debug.Log("Hit registered on enemy ship!");
-            // Perform additional checks for ship destruction and update the game state
         }
         else
         {
-            // Miss logic
             Debug.Log("Missed enemy ship.");
-            // Switch turns if the player missed
             isPlayerTurn = !isPlayerTurn;
         }
-
-        // After the hit is registered, proceed with the next turn
+        
         if (!isPlayerTurn)
         {
-            Invoke(nameof(AIPlayTurn), 1f); // Wait for 1 second and then let the AI play its turn
+            Invoke(nameof(AIPlayTurn), 1f);
         }
     }
     private void AIPlayTurn()
     {
-        // Randomly select a tile to attack
         int x = Random.Range(0, playerGridManager.gridWidth);
         int y = Random.Range(0, playerGridManager.gridHeight);
         TileScript targetTile = playerGridManager.GetTileAt(x, y).GetComponent<TileScript>();
-
-        // Simulate the AI attacking the selected tile
-        targetTile.OnHit(); // Ensure OnHit is public or internally callable
-
-        // AI's turn ends here, switch back to the player
+        
+        targetTile.OnHit();
+        
         isPlayerTurn = true;
     }
-    
-    /*private void EnemyTurn()
-    {
-        // Select a random tile from the player's grid to attack
-        Vector2Int tileToAttack = enemyGridManager.GetRandomTileCoordinates();
-        // Logic to determine if the tile hits a ship or not
-        // Update tile color and log result similar to the player's turn
-
-        // Switch turns back to the player
-        isPlayerTurn = true;
-    }*/
-
     
     public void OnReadyButtonPressed()
     {
@@ -172,13 +141,13 @@ public class GameManager : MonoBehaviour
     {
         foreach (var ship in playerPlacedShips)
         {
-            ship.SetActive(false); // This hides the player's ships
+            ship.SetActive(false);
         }
     }
     
     private void ResetEnemyTileColors()
     {
-        enemyGridManager.ResetTileColors(); // This hides the tile colors for the enemy grid
+        enemyGridManager.ResetTileColors();
     }
     
     public void StartPlayerTurn()
@@ -276,10 +245,9 @@ public class GameManager : MonoBehaviour
                 Quaternion shipRotation = isVertical ? Quaternion.Euler(-90, 0, 0) : Quaternion.Euler(-90, 90, 0);
 
                 GameObject shipInstance = Instantiate(shipPrefab, shipPosition, shipRotation);
-                shipInstance.transform.localScale = new Vector3(4, 4, shipLength); // Adjust scale if needed
+                shipInstance.transform.localScale = new Vector3(4, 4, shipLength);
                 shipInstance.transform.parent = gridManager.transform;
-
-                // If this is the enemy ship, we deactivate the GameObject and don't highlight the tile
+                
                 if (!isPlayer)
                 {
                     shipInstance.SetActive(false);
@@ -293,7 +261,7 @@ public class GameManager : MonoBehaviour
                 return shipInstance;
             }
         }
-        return null; // Ship could not be placed
+        return null;
     }
 
     private bool CanPlaceShip(GridManager gridManager, int length, int startX, int startY, bool isVertical)
@@ -305,10 +273,10 @@ public class GameManager : MonoBehaviour
             {
                 if (x < 0 || x >= gridManager.gridWidth || y < 0 || y >= gridManager.gridHeight || gridManager.IsTileOccupied(x, y))
                 {
-                    return false; // Cannot place ship here as a tile is occupied or out of bounds
+                    return false;
                 }
             }
         }
-        return true; // Area is clear, can place ship
+        return true;
     }
 }

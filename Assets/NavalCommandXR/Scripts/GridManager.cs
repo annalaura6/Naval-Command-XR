@@ -25,11 +25,10 @@ public class GridManager : MonoBehaviour
     {
         if (isPlayerTurn)
         {
-            // Waiting for the player to drop the missile
+            // drop the missile
         }
         else
         {
-            // Process the AI's turn
             AIChooseTile();
         }
     }
@@ -52,25 +51,22 @@ public class GridManager : MonoBehaviour
     private void CheckShipDestruction(TileScript hitTile)
     {
         // Check if the ship has been fully hit
-        // If so, call a method to change all involved tiles to black
+        // call a method to change all involved tiles to black
     }
     
     private void EndPlayerTurn()
     {
-        // Player's turn ends, so switch to AI's turn
         isPlayerTurn = false;
     }
     
     private void AIChooseTile()
     {
         // AI chooses a tile at random
-        // Apply the same logic as the player's missile hit
-        // Change isPlayerTurn to true at the end of AI's turn
+        isPlayerTurn = true;
     }
     
     public void DebugTurn()
     {
-        // Simple method to log whose turn it is
         Debug.Log(isPlayerTurn ? "Player's turn" : "AI's turn");
     }
     
@@ -140,14 +136,12 @@ public class GridManager : MonoBehaviour
     
     public bool IsTileOccupied(int x, int y)
     {
-        // Check if the coordinates are within the grid bounds before accessing the array
         if (x >= 0 && y >= 0 && x < gridWidth && y < gridHeight)
         {
             return occupied[x, y];
         }
         else
         {
-            // If the coordinates are out of bounds, return true to indicate the tile can't be used
             return true;
         }
     }
