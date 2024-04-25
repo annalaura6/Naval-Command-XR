@@ -2,46 +2,84 @@ using UnityEngine;
 
 public class GridManager : MonoBehaviour
 {
-    public GameObject tilePrefab; // Assign a prefab for the tile in the inspector
+    public GameObject tilePrefab; 
     public int gridWidth = 10;
     public int gridHeight = 10;
-    public float tileSize = 1.0f;
-    public float tileSpacing = 0.1f; // Space between tiles
-    public Vector3 gridStartPosition = Vector3.zero;// Set this to the width and height of your tile
+    public float tileSize = 0.001f;
+    public float tileSpacing = 0.06f; 
+    public Vector3 gridStartPosition = Vector3.zero;
 
     private GameObject[,] gridArray;
 
-    void Start()
+    private bool[,] occupied;
+    
+    void Awake()
     {
+        occupied = new bool[gridWidth, gridHeight];
         CreateGrid();
+    }
+
+    public void ResetGrid()
+    {
+        for (int x = 0; x < gridWidth; x++)
+        {
+            for (int z = 0; z < gridHeight; z++)
+            {
+                occupied[x, z] = false;
+            }
+        }
+    }
+    
+    public bool IsTileFree(int x, int y)
+    {
+        return !occupied[x, y];
+    }
+
+    public void OccupyTile(int x, int y)
+    {
+        occupied[x, y] = true;
+    }
+
+    public GameObject GetTileAt(int x, int y)
+    {
+        return gridArray[x, y];
     }
 
     void CreateGrid()
     {
         gridArray = new GameObject[gridWidth, gridHeight];
-        // Calculate total size of a tile including spacing
         float totalTileSize = tileSize + tileSpacing;
         for (int x = 0; x < gridWidth; x++)
         {
             for (int z = 0; z < gridHeight; z++)
             {
-                // Calculate the position with spacing on all sides
                 Vector3 position = gridStartPosition + new Vector3(x * totalTileSize, 0, z * totalTileSize);
-                // Adjust the position by half the spacing to ensure even spacing around tiles
                 position -= new Vector3(tileSpacing / 2, 0, tileSpacing / 2);
 
                 GameObject newTile = Instantiate(tilePrefab, position, Quaternion.identity);
                 newTile.name = $"Tile_{x}_{z}";
                 newTile.transform.parent = transform;
-
-                // You can add a TileScript component to the tile if it's not already attached in the prefab
-                //TileScript tileScript = newTile.AddComponent<TileScript>();
-                // If the TileScript is already on the prefab, use the following line instead:
+                
                 TileScript tileScript = newTile.GetComponent<TileScript>();
-
-                // Store the tile in the grid array
+                
                 gridArray[x, z] = newTile;
             }
+        }
+    }
+    public void HighlightTile(int x, int y, bool highlight)
+    {
+        TileScript tileScript = gridArray[x, y].GetComponent<TileScript>();
+        if(tileScript != null)
+        {
+            tileScript.HighlightTile(highlight);
+        }
+    }
+    
+    public void ResetTileColors()
+    {
+        foreach (GameObject tile in gridArray)
+        {
+            tile.GetComponent<TileScript>().ResetColor(); 
         }
     }
 }
