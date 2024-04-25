@@ -8,4 +8,15 @@ public class ShipScript : MonoBehaviour
     [SerializeField]
     private int shipLength = 2; 
     
+    public List<TileScript> occupiedTiles = new List<TileScript>();
+
+    public bool IsDestroyed()
+    {
+        foreach (var tile in occupiedTiles)
+        {
+            if (!tile.IsHit) 
+                return false;
+        }
+        return true;
+    }
 }

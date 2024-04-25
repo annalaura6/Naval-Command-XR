@@ -4,6 +4,7 @@ using UnityEngine;
 public class TileScript : MonoBehaviour
 {
     private bool isOccupiedByEnemyShip;
+    private bool isHit; 
     
     private Renderer _renderer;
     public static event Action<TileScript> OnMissileHit;
@@ -14,12 +15,13 @@ public class TileScript : MonoBehaviour
     }
 
     public void OnHit() {
+        IsHit = true; 
+
         if (IsOccupiedByEnemyShip) {
-            ChangeColor(Color.red); // Hit
-            //ChangeColor(Color.black); //destroyed
+            ChangeColor(Color.red); 
         }
         else {
-            ChangeColor(Color.gray); // Miss
+            ChangeColor(Color.gray); 
         }
         
         GameManager.Instance.RegisterHit(this, IsOccupiedByEnemyShip);
@@ -42,6 +44,11 @@ public class TileScript : MonoBehaviour
         get { return isOccupiedByEnemyShip; }
         set { isOccupiedByEnemyShip = value; }
     }
+
+    public bool IsHit {
+        get { return isHit; }
+        set { isHit = value; }
+    }
     
     public void HighlightTile(bool highlight)
     {
@@ -62,5 +69,6 @@ public class TileScript : MonoBehaviour
     public void ResetColor()
     {
         _renderer.material.color = Color.blue; 
+        IsHit = false; 
     }
 }

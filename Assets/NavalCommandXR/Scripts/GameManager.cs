@@ -153,15 +153,15 @@ public class GameManager : MonoBehaviour
     public void StartPlayerTurn()
     {
         Debug.Log("Player's turn!");
-        ToggleShipsVisibility(playerPlacedShips, true);
+        ToggleShipsVisibility(playerPlacedShips, false);
         ToggleShipsVisibility(enemyPlacedShips, false);
     }
     
     public void StartEnemyTurn()
     {
         Debug.Log("Enemy's turn!");
-        ToggleShipsVisibility(playerPlacedShips, false);
-        ToggleShipsVisibility(enemyPlacedShips, true);
+        ToggleShipsVisibility(playerPlacedShips, true);
+        ToggleShipsVisibility(enemyPlacedShips, false);
         AIPlayTurn();
     }
     
