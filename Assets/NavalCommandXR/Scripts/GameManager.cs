@@ -128,7 +128,7 @@ public class GameManager : MonoBehaviour
     private void AIPlayTurn()
     {
         Debug.Log("AI Play Turn");
-        int x = Random.Range(0, playerGridManager.gridWidth);
+        int x = Random.Range(0, playerGridManager.gridWidth);  
         int y = Random.Range(0, playerGridManager.gridHeight);
         TileScript targetTile = playerGridManager.GetTileAt(x, y).GetComponent<TileScript>();
         
