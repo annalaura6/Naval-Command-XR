@@ -19,8 +19,8 @@ public class GameManager : MonoBehaviour
 
     [Header("Ship Placement Settings")]
     [SerializeField] private float yOffset = 0.04f; 
-    [SerializeField] private float evenLengthAdditionalOffset = 0.05f; 
-    [SerializeField] private float oddLengthAdditionalOffset = 0.1f; 
+    [SerializeField] private float evenLengthAdditionalOffset = -0.05f; 
+    [SerializeField] private float oddLengthAdditionalOffset = -0.08f; 
 
     private bool isPlayerTurn = true;
     
@@ -41,6 +41,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         PlacePlayerShipsRandomly();
+        PlaceEnemyShipsRandomly();
+        StartPlayerTurn();
     }
     
     void OnEnable()
