@@ -25,6 +25,9 @@ public class GameManager : MonoBehaviour
     private bool isPlayerTurn = true;
     
     public static GameManager Instance;
+    
+    private Vector2Int? lastHit = null;
+    private Vector2Int lastDirection = Vector2Int.zero;
 
     void Awake()
     {
@@ -41,12 +44,12 @@ public class GameManager : MonoBehaviour
     {
         ShipScript.OnShipDestroyed += HandleShipDestroyed;
         PlacePlayerShipsRandomly();
-        PlaceEnemyShipsRandomly();
+        PlaceEnemyShipsRandomly(); //for debugging
     }
     
     public void OnReadyButtonPressed()
     {
-        PlaceEnemyShipsRandomly();
+        //PlaceEnemyShipsRandomly();
         HideUIElements();
         HidePlayerShips();
         ResetEnemyTileColors();
@@ -158,35 +161,118 @@ public class GameManager : MonoBehaviour
     }
     
     private void AIPlayTurn()
+{
+    Debug.Log("AI Play Turn - Checking strategy");
+    if (lastHit != null && lastDirection != Vector2Int.zero)
     {
-        Debug.Log("AI Play Turn");
-        bool validHit = false;
-        while (!validHit)
+        Debug.Log("Continuing in last hit direction.");
+        TryContinueHit();
+    }
+    else if (lastHit != null)
+    {
+        Debug.Log("Last direction invalid, trying a new direction.");
+        TryNewDirection();
+    }
+    else
+    {
+        Debug.Log("No recent hits, selecting random target.");
+        RandomHit();
+    }
+}
+
+private void TryContinueHit()
+{
+    if (lastHit.HasValue)
+    {
+        Vector2Int nextTarget = lastHit.Value + lastDirection;
+        Debug.Log($"Trying to continue hit at {nextTarget}.");
+        if (IsValidTarget(nextTarget))
         {
-            int x = Random.Range(0, playerGridManager.gridWidth);
-            int y = Random.Range(0, playerGridManager.gridHeight);
-            TileScript targetTile = playerGridManager.GetTileAt(x, y).GetComponent<TileScript>();
-            
-            if (!targetTile.IsHit) 
-            {
-                targetTile.OnHit(false); 
-                validHit = true; 
-           
-                if (targetTile.IsOccupiedByPlayerShip) 
-                {
-                    Debug.Log("AI hit the player's ship!");
-                    Invoke(nameof(AIPlayTurn), 1f);
-                } 
-                else 
-                {
-                    Debug.Log("AI missed!");
-                    isPlayerTurn = true;
-                    Invoke(nameof(StartPlayerTurn), 1f);
-                }
-            }
+            HitTile(nextTarget);
+        }
+        else
+        {
+            Debug.Log("Continuation target invalid, resetting direction.");
+            lastDirection = Vector2Int.zero;
+            TryNewDirection();
         }
     }
-    
+    else
+    {
+        Debug.Log("Last hit not set, reverting to random hit.");
+        RandomHit();
+    }
+}
+
+private void TryNewDirection()
+{
+    if (lastHit.HasValue)
+    {
+        List<Vector2Int> possibleDirections = new List<Vector2Int> { new Vector2Int(1, 0), new Vector2Int(-1, 0), new Vector2Int(0, 1), new Vector2Int(0, -1) };
+        Debug.Log("Selecting new direction.");
+        while (possibleDirections.Count > 0)
+        {
+            int index = Random.Range(0, possibleDirections.Count);
+            Vector2Int dir = possibleDirections[index];
+            Vector2Int newTarget = lastHit.Value + dir;
+            Debug.Log($"Trying new direction {dir} at {newTarget}.");
+            if (IsValidTarget(newTarget))
+            {
+                lastDirection = dir;
+                HitTile(newTarget);
+                return;
+            }
+            possibleDirections.RemoveAt(index);
+        }
+    }
+    Debug.Log("No valid new directions, reverting to random hit.");
+    lastHit = null;
+    RandomHit();
+}
+
+private void RandomHit()
+{
+    bool validHit = false;
+    while (!validHit)
+    {
+        int x = Random.Range(0, playerGridManager.gridWidth);
+        int y = Random.Range(0, playerGridManager.gridHeight);
+        Vector2Int target = new Vector2Int(x, y);
+        Debug.Log($"Randomly targeting {target}.");
+        if (IsValidTarget(target))
+        {
+            HitTile(target);
+            validHit = true;
+        }
+    }
+}
+
+private bool IsValidTarget(Vector2Int target)
+{
+    return target.x >= 0 && target.x < playerGridManager.gridWidth && target.y >= 0 && target.y < playerGridManager.gridHeight && !playerGridManager.GetTileAt(target.x, target.y).GetComponent<TileScript>().IsHit;
+}
+
+private void HitTile(Vector2Int target)
+{
+    TileScript tile = playerGridManager.GetTileAt(target.x, target.y).GetComponent<TileScript>();
+    Debug.Log($"AI attacking tile at {target}, occupied by player ship: {tile.IsOccupiedByPlayerShip}");
+    tile.OnHit(false);
+    if (tile.IsOccupiedByPlayerShip)
+    {
+        lastHit = target;
+        Debug.Log("AI successfully hit a player's ship. Considering next move.");
+        Invoke(nameof(AIPlayTurn), 1f);
+    }
+    else
+    {
+        lastHit = null;
+        lastDirection = Vector2Int.zero;
+        Debug.Log("AI missed, switching to player's turn.");
+        isPlayerTurn = true;
+        Invoke(nameof(StartPlayerTurn), 1f);
+    }
+}
+
     private void HidePlayerShips()
     {
         foreach (var ship in playerPlacedShips)
