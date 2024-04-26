@@ -17,7 +17,6 @@ public class TileScript : MonoBehaviour
 
     public void OnHit(bool isPlayerAttack) 
     {
-        // Check if this tile has already been hit to prevent processing it again
         if (IsHit) 
         {
             Debug.Log("Tile already hit: " + name);
@@ -25,14 +24,11 @@ public class TileScript : MonoBehaviour
         }
 
         IsHit = true;
-
-        // Log which type of attack is happening on which tile
+        
         Debug.Log($"{(isPlayerAttack ? "Player" : "AI")} attack on tile {name}");
-
-        // Determine the attack result and change color accordingly
+        
         if (isPlayerAttack)
         {
-            // This is a player's attack on the enemy grid
             bool wasHit = IsOccupiedByEnemyShip;
             ChangeColor(wasHit ? Color.red : Color.gray);
             Debug.Log($"Player attack on tile {name} - Occupied by enemy ship: {wasHit}");
@@ -40,7 +36,6 @@ public class TileScript : MonoBehaviour
         }
         else
         {
-            // This is the AI's attack on the player grid
             bool wasHit = IsOccupiedByPlayerShip;
             ChangeColor(wasHit ? Color.red : Color.gray);
             Debug.Log($"AI attack on tile {name} - Occupied by player ship: {wasHit}");
@@ -102,8 +97,5 @@ public class TileScript : MonoBehaviour
     {
         _renderer.material.color = Color.blue; 
         IsHit = false; 
-        // Reset the occupation flags
-        //IsOccupiedByEnemyShip = false;
-        //IsOccupiedByPlayerShip = false;
     }
 }

@@ -17,7 +17,6 @@ public class ShipScript : MonoBehaviour
     {
         if (IsDestroyed())
         {
-            // Invoke the OnShipDestroyed event and pass this ShipScript as a parameter
             OnShipDestroyed?.Invoke(this);
         }
         

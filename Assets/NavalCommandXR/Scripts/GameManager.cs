@@ -65,13 +65,11 @@ public class GameManager : MonoBehaviour
     
     private void OnDestroy()
     {
-        // Unsubscribe to prevent memory leaks
         ShipScript.OnShipDestroyed -= HandleShipDestroyed;
     }
 
     private void HandleShipDestroyed(ShipScript destroyedShip)
     {
-        // Handle the ship destruction, maybe by updating the UI or ending the game
         Debug.Log("Ship destroyed: " + destroyedShip.gameObject.name);
     }
     
@@ -80,18 +78,16 @@ public class GameManager : MonoBehaviour
        bool hit = tileScript.IsOccupiedByEnemyShip;
        tileScript.ChangeColor(hit ? Color.red : Color.grey);
        Debug.Log(hit ? "Hit!" : "Miss!");
-       isPlayerTurn = !hit; // If hit, the player continues, otherwise, it's AI's turn
+       isPlayerTurn = !hit; 
+       Debug.Log("player hit");
        
-       // Proceed based on hit or miss
        if (hit) {
            if (CheckIfShipIsDestroyed(tileScript)) {
                ChangeShipTilesToDestroyed(tileScript);
                Debug.Log("Enemy ship destroyed!");
            }
-           // Invoke StartPlayerTurn to give player another turn
            Invoke(nameof(StartPlayerTurn), 1f);
        } else {
-           // Invoke StartEnemyTurn to switch to AI's turn
            Invoke(nameof(StartEnemyTurn), 1f);
        }
    }
@@ -124,18 +120,16 @@ public class GameManager : MonoBehaviour
         if (wasHit)
         {
             Debug.Log((isPlayerAttack ? "Player" : "AI") + " hit a ship!");
-            tile.ChangeColor(Color.red); // Red for a hit
+            tile.ChangeColor(Color.red);
         }
         else
         {
             Debug.Log((isPlayerAttack ? "Player" : "AI") + " missed.");
-            tile.ChangeColor(Color.gray); // Gray for a miss
+            tile.ChangeColor(Color.gray); 
         }
-
-        // Update game state
+        
         if (isPlayerAttack)
         {
-            // Player's logic
             if (!wasHit)
             {
                 // Player missed, so it's AI's turn
@@ -172,26 +166,22 @@ public class GameManager : MonoBehaviour
             int x = Random.Range(0, playerGridManager.gridWidth);
             int y = Random.Range(0, playerGridManager.gridHeight);
             TileScript targetTile = playerGridManager.GetTileAt(x, y).GetComponent<TileScript>();
-
-            // Check if the tile has already been hit to prevent hitting the same tile again
+            
             if (!targetTile.IsHit) 
             {
-                targetTile.OnHit(false); // Pass false to indicate this is an AI attack
-                validHit = true; // We made a valid hit, so we can exit the loop
-
-                // Determine the next action based on whether the AI hit or missed
+                targetTile.OnHit(false); 
+                validHit = true; 
+           
                 if (targetTile.IsOccupiedByPlayerShip) 
                 {
-                    // If hit, AI gets another turn
                     Debug.Log("AI hit the player's ship!");
-                    Invoke(nameof(AIPlayTurn), 1f); // Wait for 1 second before AI's next turn
+                    Invoke(nameof(AIPlayTurn), 1f);
                 } 
                 else 
                 {
-                    // If miss, it's now the player's turn
                     Debug.Log("AI missed!");
-                    isPlayerTurn = true; // Change turn to player
-                    Invoke(nameof(StartPlayerTurn), 1f); // Wait for 1 second before switching to player's turn
+                    isPlayerTurn = true;
+                    Invoke(nameof(StartPlayerTurn), 1f);
                 }
             }
         }
@@ -310,7 +300,6 @@ public class GameManager : MonoBehaviour
                 
                 if (isPlayer)
                 {
-                    // Add this for player ships
                     foreach (Vector2Int tile in occupiedTiles)
                     {
                         gridManager.GetTileAt(tile.x, tile.y).GetComponent<TileScript>().SetOccupiedByPlayerShip(true);
