@@ -41,8 +41,6 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         PlacePlayerShipsRandomly();
-        PlaceEnemyShipsRandomly();
-        StartPlayerTurn();
     }
     
     void OnEnable()

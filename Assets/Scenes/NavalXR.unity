@@ -1434,7 +1434,6 @@ GameObject:
   m_Component:
   - component: {fileID: 509025939}
   - component: {fileID: 509025938}
-  - component: {fileID: 509025940}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1488,25 +1487,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &509025940
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 509025937}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44124cb68cab7f74fbca8753102e42f9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tilePrefab: {fileID: 7378467396640639981, guid: 2446c7de287c7884093b8461f059ca3b,
-    type: 3}
-  gridWidth: 10
-  gridHeight: 10
-  tileSize: 0.001
-  tileSpacing: 0.06
-  gridStartPosition: {x: -0.373, y: 0.77, z: 0.187}
 --- !u!1 &512215216 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9084958523610681078, guid: bfdd1392affacd34fbe37748985e7372,
@@ -5593,7 +5573,7 @@ MonoBehaviour:
   gridHeight: 10
   tileSize: 0.001
   tileSpacing: 0.06
-  gridStartPosition: {x: 0.742, y: 0.77, z: 0.187}
+  gridStartPosition: {x: 0.5, y: 0.77, z: 0.187}
 --- !u!4 &2089149325
 Transform:
   m_ObjectHideFlags: 0
