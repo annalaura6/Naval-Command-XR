@@ -37,10 +37,18 @@ public class GameManager : MonoBehaviour
             Instance = this;
         }
     }
-
     void Start()
     {
         PlacePlayerShipsRandomly();
+    }
+    
+    public void OnReadyButtonPressed()
+    {
+        PlaceEnemyShipsRandomly();
+        HideUIElements();
+        HidePlayerShips();
+        ResetEnemyTileColors();
+        StartPlayerTurn();
     }
     
     void OnEnable()
@@ -119,6 +127,7 @@ public class GameManager : MonoBehaviour
     }
     private void AIPlayTurn()
     {
+        Debug.Log("AI Play Turn");
         int x = Random.Range(0, playerGridManager.gridWidth);
         int y = Random.Range(0, playerGridManager.gridHeight);
         TileScript targetTile = playerGridManager.GetTileAt(x, y).GetComponent<TileScript>();
@@ -126,16 +135,11 @@ public class GameManager : MonoBehaviour
         targetTile.OnHit();
         
         isPlayerTurn = false;
+        
+        Invoke(nameof(StartPlayerTurn), 1.0f);
     }
     
-    public void OnReadyButtonPressed()
-    {
-        PlaceEnemyShipsRandomly();
-        HideUIElements();
-        HidePlayerShips();
-        ResetEnemyTileColors();
-        StartPlayerTurn();
-    }
+    
 
     private void HidePlayerShips()
     {
@@ -155,6 +159,8 @@ public class GameManager : MonoBehaviour
         Debug.Log("Player's turn!");
         ToggleShipsVisibility(playerPlacedShips, false);
         ToggleShipsVisibility(enemyPlacedShips, false);
+        //playerGridManager.gameObject.SetActive(false);
+        //enemyGridManager.gameObject.SetActive(true);
     }
     
     public void StartEnemyTurn()
@@ -162,19 +168,17 @@ public class GameManager : MonoBehaviour
         Debug.Log("Enemy's turn!");
         ToggleShipsVisibility(playerPlacedShips, true);
         ToggleShipsVisibility(enemyPlacedShips, false);
+        //enemyGridManager.gameObject.SetActive(false);
+        //playerGridManager.gameObject.SetActive(true);
         AIPlayTurn();
     }
-    
+
     private void ToggleShipsVisibility(List<GameObject> ships, bool visible)
     {
         foreach (var ship in ships)
         {
             ship.SetActive(visible);
         }
-    }
-    private void LockPlayerShips()
-    {
-       //
     }
 
     private void HideUIElements()
