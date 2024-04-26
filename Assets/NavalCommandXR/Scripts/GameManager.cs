@@ -127,7 +127,7 @@ public class GameManager : MonoBehaviour
         
         targetTile.OnHit();
         
-        isPlayerTurn = true;
+        isPlayerTurn = false;
     }
     
     public void OnReadyButtonPressed()
