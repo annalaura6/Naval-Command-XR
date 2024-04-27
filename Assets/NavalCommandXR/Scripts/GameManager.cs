@@ -44,12 +44,12 @@ public class GameManager : MonoBehaviour
     {
         ShipScript.OnShipDestroyed += HandleShipDestroyed;
         PlacePlayerShipsRandomly();
-        PlaceEnemyShipsRandomly(); //for debugging
+        //PlaceEnemyShipsRandomly(); //for debugging
     }
     
     public void OnReadyButtonPressed()
     {
-        //PlaceEnemyShipsRandomly();
+        PlaceEnemyShipsRandomly();
         HideUIElements();
         HidePlayerShips();
         ResetEnemyTileColors();
@@ -289,7 +289,7 @@ private void HitTile(Vector2Int target)
     public void StartPlayerTurn()
     {
         Debug.Log("Player's turn!");
-        ToggleShipsVisibility(playerPlacedShips, false);
+        ToggleShipsVisibility(playerPlacedShips, true);
         ToggleShipsVisibility(enemyPlacedShips, false);
         //playerGridManager.gameObject.SetActive(false);
         //enemyGridManager.gameObject.SetActive(true);
